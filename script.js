@@ -36,6 +36,9 @@ class ExcelToJSON {
 
           // Append data rows
           data.forEach(function (item) {
+            const messsage = generateMessage(item.name);
+            const msgString = JSON.stringify(messsage);
+
             let $parent = $("<div>").addClass("mb-4");
 
             let $parentName = $("<div id='parent-name'>").addClass("flex gap-2 mb-2 items-center");
@@ -45,11 +48,10 @@ class ExcelToJSON {
             let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
 
             let $parentIcon = $("<div>").addClass("flex gap-2 w-[20%] justify-between items-center");
-            let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick="shareLink(this)"><i class="fa-solid fa-share"></i></div>`);
+            let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${msgString})'><i class="fa-solid fa-share"></i></div>`);
             let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this)"><i class="fa-solid fa-clipboard"></i></div>`);
 
             $parentName.append($name);
-
             $parentLink.append($link);
             $parentIcon.append($iconShare).append($iconCopy);
             $parentLink.append($parentIcon);
@@ -70,15 +72,15 @@ class ExcelToJSON {
   }
 }
 
-const shareLink = (element) => {
+const shareLink = (element, message) => {
   let $parentName = $(element).parent().parent().siblings();
   let $iconSuccess = $(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i> Done!`);
 
   $parentName.find("i").remove();
+  $parentName.find("span").filter(".done").remove();
   $parentName.find("span").addClass("text-green-600");
-  $parentName.append($iconSuccess).append($(`<span class="text-green-600 text-[10px]">Done!</span>`));
+  $parentName.append($iconSuccess).append($(`<span class="text-green-600 text-[10px] done">Done!</span>`));
 
-  const message = "Check this out! https://juandisyahputro.github.io/portfolio-tailwind-css/";
   const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}`;
   window.open(whatsappURL, "_blank");
 };
@@ -88,11 +90,17 @@ const copyLink = (element) => {
   let $iconSuccess = $(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i>`);
 
   $parentName.find("i").remove();
+  $parentName.find("span").filter(".done").remove();
   $parentName.find("span").addClass("text-green-600");
-  $parentName.append($iconSuccess).append($(`<span class="text-green-600 text-[10px]">Done!</span>`));
+  $parentName.append($iconSuccess).append($(`<span class="text-green-600 text-[10px] done">Done!</span>`));
 
   $(element).html(`<i class="fa-solid fa-check text-green-600"></i>`);
 
   const link = $(element).parent().parent().find("a").text();
   navigator.clipboard.writeText(link);
 }
+
+const generateMessage = (name) => {
+  const msg = `Hi *${name}*,\nCheck this out! https://juandisyahputro.github.io/portfolio-tailwind-css/`;
+  return msg;
+};
