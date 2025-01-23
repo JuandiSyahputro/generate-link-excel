@@ -42,7 +42,7 @@ class ExcelToJSON {
             let $name = $("<span>").addClass("font-semibold text-gray-700 text-[10px]").text(`Link ${item.name}`);
 
             let $parentLink = $("<div>").addClass("flex justify-between items-center");
-            let $link = $("<a>").addClass("text-blue-600 w-[80%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
+            let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
 
             let $parentIcon = $("<div>").addClass("flex gap-2 w-[20%] justify-between items-center");
             let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick="shareLink(this)"><i class="fa-solid fa-share"></i></div>`);
@@ -72,11 +72,11 @@ class ExcelToJSON {
 
 const shareLink = (element) => {
   let $parentName = $(element).parent().parent().siblings();
-  let $iconSuccess = $(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i>`);
+  let $iconSuccess = $(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i> Done!`);
 
   $parentName.find("i").remove();
   $parentName.find("span").addClass("text-green-600");
-  $parentName.append($iconSuccess);
+  $parentName.append($iconSuccess).append($(`<span class="text-green-600 text-[10px]">Done!</span>`));
 
   const message = "Check this out! https://juandisyahputro.github.io/portfolio-tailwind-css/";
   const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -89,7 +89,7 @@ const copyLink = (element) => {
 
   $parentName.find("i").remove();
   $parentName.find("span").addClass("text-green-600");
-  $parentName.append($iconSuccess);
+  $parentName.append($iconSuccess).append($(`<span class="text-green-600 text-[10px]">Done!</span>`));
 
   $(element).html(`<i class="fa-solid fa-check text-green-600"></i>`);
 
