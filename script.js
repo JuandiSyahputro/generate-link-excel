@@ -42,7 +42,7 @@ class ExcelToJSON {
             let $name = $("<span>").addClass("font-semibold text-gray-700 text-[10px]").text(`Link ${item.name}`);
 
             let $parentLink = $("<div>").addClass("flex justify-between items-center");
-            let $link = $("<a>").addClass("text-blue-600 w-[80%]").text("https://example.com");
+            let $link = $("<a>").addClass("text-blue-600 w-[80%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
 
             let $parentIcon = $("<div>").addClass("flex gap-2 w-[20%] justify-between items-center");
             let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick="shareLink(this)"><i class="fa-solid fa-share"></i></div>`);
@@ -78,7 +78,7 @@ const shareLink = (element) => {
   $parentName.find("span").addClass("text-green-600");
   $parentName.append($iconSuccess);
 
-  const message = "Check this out! https://example.com";
+  const message = "Check this out! https://juandisyahputro.github.io/portfolio-tailwind-css/";
   const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}`;
   window.open(whatsappURL, "_blank");
 };
