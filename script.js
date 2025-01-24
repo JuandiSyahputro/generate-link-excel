@@ -7,9 +7,7 @@ $(document).ready(function () {
     data.map((item, index) => {
       const firstKey = Object.keys(item)[0];
       const firstValue = item[firstKey];
-
       const messsage = generateMessage(firstValue);
-      const msgString = JSON.stringify(messsage);
 
       let $parent = $("<div>").addClass("mb-4");
 
@@ -20,7 +18,7 @@ $(document).ready(function () {
       let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
 
       let $parentIcon = $("<div>").addClass("flex gap-2 w-[20%] justify-between items-center");
-      let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${msgString}, ${index})'><i class="fa-solid fa-share"></i></div>`);
+      let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
       let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
 
 
@@ -85,9 +83,7 @@ class ExcelToJSON {
           data.forEach(function (item, index) {
             const firstKey = Object.keys(item)[0];
             const firstValue = item[firstKey];
-
             const messsage = generateMessage(firstValue);
-            const msgString = JSON.stringify(messsage);
 
             let $parent = $("<div>").addClass("mb-4");
 
@@ -98,7 +94,7 @@ class ExcelToJSON {
             let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
 
             let $parentIcon = $("<div>").addClass("flex gap-2 w-[20%] justify-between items-center");
-            let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${msgString}, ${index})'><i class="fa-solid fa-share"></i></div>`);
+            let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
             let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
 
             $parentName.append($name);
@@ -184,5 +180,5 @@ const copyLink = (element, index) => {
 
 const generateMessage = (name) => {
   const msg = `Hi *${name}*,\nCheck this out! https://juandisyahputro.github.io/portfolio-tailwind-css/`;
-  return msg;
+  return JSON.stringify(msg);
 };
