@@ -17,7 +17,7 @@ $(document).ready(function () {
       let $parentLink = $("<div>").addClass("flex justify-between items-center");
       let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
 
-      let $parentIcon = $("<div>").addClass("flex gap-2 w-[20%] justify-between items-center");
+      let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
       let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
       let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
 
@@ -93,7 +93,7 @@ class ExcelToJSON {
             let $parentLink = $("<div>").addClass("flex justify-between items-center");
             let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
 
-            let $parentIcon = $("<div>").addClass("flex gap-2 w-[20%] justify-between items-center");
+            let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
             let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
             let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
 
