@@ -179,6 +179,7 @@ const copyLink = (element, index) => {
 }
 
 const generateMessage = (name) => {
-  const msg = `Hi *${name}*,\nCheck this out! https://juandisyahputro.github.io/portfolio-tailwind-css/`;
+  const msg = `Yth. *${name}*,\n\n_*Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.* —— *Matius 19:6*_\n\nDengan segenap rasa syukur atas karunia yang telah Tuhan berikan, kami bermaksud untuk mengundang dalam acara pernikahan kami,\n\n*Gloria Natali Br. Panggabean dengan Noverdi Setyo Pambudi*\n\nInformasi lebih lengkap mengenai detail acara, bisa klik link tautan di bawah ini:\nhttps://juandisyahputro.github.io/portfolio-tailwind-css/\n\nSuatu kebahagiaan untuk kami jika para saudara/i berkenan hadir di acara kami. Atas kehadirannya kami ucapkan banyak terima kasih.\n\nMohon maaf perihal undangan hanya dibagikan melalui pesan ini.`
+
   return JSON.stringify(msg);
 };
