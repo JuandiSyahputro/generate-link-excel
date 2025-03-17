@@ -7,7 +7,8 @@ $(document).ready(function () {
     data.map((item, index) => {
       const firstKey = Object.keys(item)[0];
       const firstValue = item[firstKey];
-      const messsage = generateMessage(firstValue);
+      const replaceName = firstValue.replace(/ /g, '%20');
+      const messsage = generateMessage(replaceName, firstValue);
 
       let $parent = $("<div>").addClass("mb-4");
 
@@ -15,7 +16,7 @@ $(document).ready(function () {
       let $name = $("<span>").addClass(`font-semibold text-[10px] ${item.isClick ? "text-green-600" : "text-gray-700"}`).text(`Link ${firstValue}`);
 
       let $parentLink = $("<div>").addClass("flex justify-between items-center");
-      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
+      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://udu-invitations.com/wedding-verdy-natali/?to=" + replaceName);
 
       let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
       let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
@@ -83,7 +84,8 @@ class ExcelToJSON {
           data.forEach(function (item, index) {
             const firstKey = Object.keys(item)[0];
             const firstValue = item[firstKey];
-            const messsage = generateMessage(firstValue);
+            const replaceName = firstValue.replace(/ /g, '%20');
+            const messsage = generateMessage(replaceName, firstValue);
 
             let $parent = $("<div>").addClass("mb-4");
 
@@ -91,7 +93,7 @@ class ExcelToJSON {
             let $name = $("<span>").addClass("font-semibold text-gray-700 text-[10px]").text(`Link ${firstValue}`);
 
             let $parentLink = $("<div>").addClass("flex justify-between items-center");
-            let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://juandisyahputro.github.io/portfolio-tailwind-css/");
+            let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://udu-invitations.com/wedding-verdy-natali/?to=" + replaceName);
 
             let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
             let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
@@ -178,8 +180,8 @@ const copyLink = (element, index) => {
   }, 1000);
 }
 
-const generateMessage = (name) => {
-  const msg = `Yth. *${name}*,\n\n_*Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.* —— *Matius 19:6*_\n\nDengan segenap rasa syukur atas karunia yang telah Tuhan berikan, kami bermaksud untuk mengundang dalam acara pernikahan kami,\n\n*Gloria Natali Br. Panggabean dengan Noverdi Setyo Pambudi*\n\nInformasi lebih lengkap mengenai detail acara, bisa klik link tautan di bawah ini:\nhttps://juandisyahputro.github.io/portfolio-tailwind-css/\n\nSuatu kebahagiaan untuk kami jika para saudara/i berkenan hadir di acara kami. Atas kehadirannya kami ucapkan banyak terima kasih.\n\nMohon maaf perihal undangan hanya dibagikan melalui pesan ini.`
+const generateMessage = (name, firstValue) => {
+  const msg = `Yth. *${firstValue}*,\n\n_*Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.* —— *Matius 19:6*_\n\nDengan segenap rasa syukur atas karunia yang telah Tuhan berikan, kami bermaksud untuk mengundang dalam acara pernikahan kami,\n\n*Noverdi Setyo Pambudi dengan Gloria Natali Br. Panggabean*\n\nInformasi lebih lengkap mengenai detail acara, bisa klik link tautan di bawah ini:\nhttps://udu-invitations.com/wedding-verdy-natali/?to=${name}\n\nSuatu kebahagiaan untuk kami jika para saudara/i berkenan hadir di acara kami. Atas kehadirannya kami ucapkan banyak terima kasih.\n\nMohon maaf perihal undangan hanya dibagikan melalui pesan ini.`
 
   return JSON.stringify(msg);
 };
