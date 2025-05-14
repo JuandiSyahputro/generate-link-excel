@@ -62,6 +62,11 @@ $(document).ready(function () {
   });
 });
 
+$(".onclick-info").on("click", function () {
+  // alert("Untuk generate link hanya bisa 1 file hanya bisa 1 sheet.");
+  $(this).siblings().toggleClass("hidden");
+})
+
 
 class ExcelToJSON {
   constructor() {
