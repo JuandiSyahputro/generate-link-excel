@@ -7,7 +7,7 @@ $(document).ready(function () {
     data.map((item, index) => {
       const firstKey = Object.keys(item)[0];
       const firstValue = item[firstKey];
-      const replaceName = firstValue.replace(/ /g, '%20');
+      const replaceName = encodeURIComponent(firstValue);
       const messsage = generateMessage(replaceName, firstValue);
 
       let $parent = $("<div>").addClass("mb-4");
