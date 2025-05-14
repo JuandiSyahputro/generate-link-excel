@@ -22,9 +22,10 @@
         <div>
           <div class="flex gap-1 items-center mb-2">
             <label for="upload" class="block text-gray-600 font-medium"> Unggah File </label>
-            <div class="group relative">
-              <i class="fa-solid fa-circle-info fa-sm cursor-pointer onclick-info" style="color: #f50000"></i>
-              <div class="hidden w-[200px] group-hover:block absolute top-4/4 left-1/2 transform bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm p-2">
+            <div class="group relative inline-block">
+              <i class="fa-solid fa-circle-info fa-sm cursor-pointer info-icon" style="color: #f50000"></i>
+              <div
+                class="tooltip pointer-events-none opacity-0 scale-95 group-hover:pointer-events-auto group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 absolute top-6 left-1/2 w-[200px] bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm p-2 z-10">
                 <p>Untuk generate link hanya bisa 1 file hanya bisa 1 sheet.</p>
               </div>
             </div>

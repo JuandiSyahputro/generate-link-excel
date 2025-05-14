@@ -62,10 +62,23 @@ $(document).ready(function () {
   });
 });
 
-$(".onclick-info").on("click", function () {
-  // alert("Untuk generate link hanya bisa 1 file hanya bisa 1 sheet.");
-  $(this).siblings().toggleClass("hidden");
-})
+$(".info-icon").on("click", function (e) {
+  const tooltip = $(this).siblings(".tooltip");
+  if (tooltip.hasClass("opacity-100")) {
+    tooltip.removeClass("opacity-100 scale-100 pointer-events-auto")
+      .addClass("opacity-0 scale-95 pointer-events-none");
+  } else {
+    tooltip.removeClass("opacity-0 scale-95 pointer-events-none")
+      .addClass("opacity-100 scale-100 pointer-events-auto");
+  }
+
+  e.stopPropagation();
+});
+
+$(document).on("click", function () {
+  $(".tooltip").removeClass("opacity-100 scale-100 pointer-events-auto")
+    .addClass("opacity-0 scale-95 pointer-events-none");
+});
 
 
 class ExcelToJSON {
