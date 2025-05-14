@@ -15,10 +15,25 @@
   <body class="bg-gray-100 px-4 min-h-screen flex items-center justify-center">
     <main class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
       <h1 class="text-2xl font-semibold text-gray-700 text-center mb-4">Generate Link</h1>
+      <div class="text-right mb-4">
+        <a href="/assets/random_names.xlsx" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer" download>Download Template File <i class="fa-solid fa-download"></i></a>
+      </div>
       <form id="upload-form" class="space-y-4">
         <div>
-          <label for="upload" class="block text-gray-600 font-medium mb-2"> Unggah File </label>
-          <input type="file" id="upload" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200" />
+          <div class="flex gap-1 items-center mb-2">
+            <label for="upload" class="block text-gray-600 font-medium"> Unggah File </label>
+            <div class="group relative">
+              <i class="fa-solid fa-circle-info fa-sm cursor-pointer" style="color: #f50000"></i>
+              <div class="hidden w-[200px] group-hover:block absolute top-4/4 left-1/2 transform bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm p-2">
+                <p>Untuk generate link hanya bisa 1 file hanya bisa 1 sheet.</p>
+              </div>
+            </div>
+          </div>
+          <input
+            type="file"
+            accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+            id="upload"
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200" />
         </div>
         <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">Generate</button>
       </form>
