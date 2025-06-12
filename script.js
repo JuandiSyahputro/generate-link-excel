@@ -51,8 +51,12 @@ $(document).ready(async function () {
 
       $parent.append($parentName);
       $parent.append($parentLink);
+      $(".animation-loading").addClass("hidden");
       $("#output").append($parent);
     })
+  } else {
+    $(".animation-loading").addClass("hidden");
+    $("#output").append(`<p class="text-center text-gray-600">Tidak ada data</p>`);
   }
 
   $("#upload-form").on("submit", function (evt) {
@@ -65,7 +69,8 @@ $(document).ready(async function () {
       return;
     }
 
-    $("#output").empty();
+    $(".animation-loading").removeClass("hidden");
+    $("#output").find("p").addClass("hidden");
     $(this).find("button").prop("disabled", true).text("Loading...");
 
     setTimeout(() => {
@@ -153,6 +158,8 @@ class ExcelToJSON {
 
             $parent.append($parentName);
             $parent.append($parentLink);
+            $(".animation-loading").addClass("hidden");
+            $("#output").find("p").remove();
             $("#output").append($parent);
           });
         });
