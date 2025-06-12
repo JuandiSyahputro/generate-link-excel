@@ -1,14 +1,19 @@
 
-$(document).ready(function () {
+$(document).ready(async function () {
   let getLocalStorage = localStorage.getItem("data-list");
   if (getLocalStorage) {
     const data = JSON.parse(getLocalStorage);
+    const { description } = await getMessageAPIDesc();
+    const desc = description.replace(/\\n/g, "\n");
+    const match = description.match(/https:\/\/udu-invitations\.com\/[^\s"]+\?to=[\w%-]*/);
+    const urlLink = match ? match[0] : null;
+
 
     data.map((item, index) => {
       const firstKey = Object.keys(item)[0];
       const firstValue = item[firstKey];
       const replaceName = encodeURIComponent(firstValue);
-      const messsage = generateMessage(replaceName, firstValue);
+      const messsage = generateMessage(replaceName, firstValue, desc);
 
       let $parent = $("<div>").addClass("mb-4");
 
@@ -16,10 +21,21 @@ $(document).ready(function () {
       let $name = $("<span>").addClass(`font-semibold text-[10px] ${item.isClick ? "text-green-600" : "text-gray-700"}`).text(`Link ${firstValue}`);
 
       let $parentLink = $("<div>").addClass("flex justify-between items-center");
-      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://udu-invitations.com/wedding-verdy-natali/?to=" + replaceName);
+      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text(urlLink + replaceName);
 
       let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
-      let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
+      let $iconShare = $("<div>")
+        .addClass("cursor-pointer")
+        .attr("title", "Share")
+        .attr("data-message", messsage)
+        .attr("data-index", index)
+        .html('<i class="fa-solid fa-share"></i>')
+        .on("click", function () {
+          const message = $(this).attr("data-message");
+          const idx = parseInt($(this).attr("data-index"), 10);
+          shareLink(this, message, idx);
+        });
+
       let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
 
 
@@ -83,9 +99,12 @@ $(document).on("click", function () {
 
 class ExcelToJSON {
   constructor() {
-    this.parseExcel = function (file) {
+    this.parseExcel = async function (file) {
       let reader = new FileReader();
-
+      const { description } = await getMessageAPIDesc();
+      const desc = description.replace(/\\n/g, "\n");
+      const match = description.match(/https:\/\/udu-invitations\.com\/[^\s"]+\?to=[\w%-]*/);
+      const urlLink = match ? match[0] : null;
       reader.onload = function (e) {
         let data = e.target.result;
         let workbook = XLSX.read(data, {
@@ -103,7 +122,7 @@ class ExcelToJSON {
             const firstKey = Object.keys(item)[0];
             const firstValue = item[firstKey];
             const replaceName = encodeURIComponent(firstValue);
-            const messsage = generateMessage(replaceName, firstValue);
+            const messsage = generateMessage(replaceName, firstValue, desc);
 
             let $parent = $("<div>").addClass("mb-4");
 
@@ -111,10 +130,20 @@ class ExcelToJSON {
             let $name = $("<span>").addClass("font-semibold text-gray-700 text-[10px]").text(`Link ${firstValue}`);
 
             let $parentLink = $("<div>").addClass("flex justify-between items-center");
-            let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text("https://udu-invitations.com/wedding-verdy-natali/?to=" + replaceName);
+            let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text(urlLink + replaceName);
 
             let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
-            let $iconShare = $(`<div class="cursor-pointer" title="Share" onclick='shareLink(this, ${messsage}, ${index})'><i class="fa-solid fa-share"></i></div>`);
+            let $iconShare = $("<div>")
+              .addClass("cursor-pointer")
+              .attr("title", "Share")
+              .attr("data-message", messsage)
+              .attr("data-index", index)
+              .html('<i class="fa-solid fa-share"></i>')
+              .on("click", function () {
+                const message = $(this).attr("data-message");
+                const idx = parseInt($(this).attr("data-index"), 10);
+                shareLink(this, message, idx);
+              });
             let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
 
             $parentName.append($name);
@@ -198,8 +227,29 @@ const copyLink = (element, index) => {
   }, 1000);
 }
 
-const generateMessage = (name, firstValue) => {
-  const msg = `Yth. *${firstValue}*,\n\n_*Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.* —— *Matius 19:6*_\n\nDengan segenap rasa syukur atas karunia yang telah Tuhan berikan, kami bermaksud untuk mengundang dalam acara pernikahan kami,\n\n*Noverdi Setyo Pambudi dengan Gloria Natali Br. Panggabean*\n\nInformasi lebih lengkap mengenai detail acara, bisa klik link tautan di bawah ini:\nhttps://udu-invitations.com/wedding-verdy-natali/?to=${name}\n\nSuatu kebahagiaan untuk kami jika para saudara/i berkenan hadir di acara kami. Atas kehadirannya kami ucapkan banyak terima kasih.\n\nMohon maaf perihal undangan hanya dibagikan melalui pesan ini.`
+const generateMessage = (name, firstValue, msgAPI) => {
 
-  return JSON.stringify(msg);
+  msgAPI = msgAPI.replace(/\$\{parameter\}/g, firstValue);
+  msgAPI = msgAPI.replace(/\$\{parameter-2\}/g, name);
+
+  return msgAPI;
 };
+
+
+const getMessageAPIDesc = async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const bride = urlParams.get("bride");
+
+  try {
+    const response = await fetch("https://api-udu-invitations.vercel.app/api/v1/udu-invitations/message-form" + `?bride=${bride}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const { data } = await response.json();
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
