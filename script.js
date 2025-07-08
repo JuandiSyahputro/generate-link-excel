@@ -71,6 +71,7 @@ $(document).ready(async function () {
 
     $(".animation-loading").removeClass("hidden");
     $("#output").find("p").addClass("hidden");
+    $("#output").find(".animation-loading").siblings().remove();
     $(this).find("button").prop("disabled", true).text("Loading...");
 
     setTimeout(() => {
