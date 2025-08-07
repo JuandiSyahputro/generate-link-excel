@@ -8,12 +8,12 @@ $(document).ready(async function () {
     const match = description.match(/https:\/\/udu-invitations\.com\/[^\s"]+\?to=[\w%-]*/);
     const urlLink = match ? match[0] : null;
 
-
     data.map((item, index) => {
       const firstKey = Object.keys(item)[0];
       const firstValue = item[firstKey];
       const replaceName = encodeURIComponent(firstValue);
       const messsage = generateMessage(replaceName, firstValue, desc);
+
 
       let $parent = $("<div>").addClass("mb-4");
 
@@ -21,7 +21,7 @@ $(document).ready(async function () {
       let $name = $("<span>").addClass(`font-semibold text-[10px] ${item.isClick ? "text-green-600" : "text-gray-700"}`).text(`Link ${firstValue}`);
 
       let $parentLink = $("<div>").addClass("flex justify-between items-center");
-      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text(urlLink + replaceName);
+      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").attr("data-message", messsage).text(urlLink + replaceName);
 
       let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
       let $iconShare = $("<div>")
@@ -55,6 +55,7 @@ $(document).ready(async function () {
       $("#output").append($parent);
     })
   } else {
+
     $(".animation-loading").addClass("hidden");
     $("#output").append(`<p class="text-center text-gray-600">Tidak ada data</p>`);
   }
@@ -136,7 +137,7 @@ class ExcelToJSON {
             let $name = $("<span>").addClass("font-semibold text-gray-700 text-[10px]").text(`Link ${firstValue}`);
 
             let $parentLink = $("<div>").addClass("flex justify-between items-center");
-            let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").text(urlLink + replaceName);
+            let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").attr("data-message", messsage).text(urlLink + replaceName);
 
             let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
             let $iconShare = $("<div>")
@@ -213,8 +214,8 @@ const copyLink = (element, index) => {
 
   $(element).html(`<i class="fa-solid fa-check text-green-600"></i>`);
 
-  const link = $(element).parent().parent().find("a").text();
-  navigator.clipboard.writeText(link);
+  const message = $(element).parent().parent().find("a").attr("data-message");
+  navigator.clipboard.writeText(message);
 
   const getLocalStorage = localStorage.getItem("data-list");
   const updatedData = JSON.parse(getLocalStorage);
