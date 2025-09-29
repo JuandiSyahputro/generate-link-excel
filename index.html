@@ -117,13 +117,13 @@
   <body class="bg-gray-100 px-4 min-h-screen flex items-center justify-center">
     <main class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
       <h1 class="text-2xl font-semibold text-gray-700 text-center mb-4">Generate Link</h1>
-      <div class="text-right mb-4">
+      <div class="text-right mb-4" id="download-template">
         <a href="assets/random_names.xlsx" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer" download>Download Template File <i class="fa-solid fa-download"></i></a>
       </div>
       <form id="upload-form" class="space-y-4">
-        <div>
-          <div class="flex gap-1 items-center mb-2">
-            <label for="upload" class="block text-gray-600 font-medium"> Unggah File </label>
+        <div class="grid grid-cols-2 border-b border-gray-300">
+          <button id="tab-upload" class="tab-btn cursor-pointer flex justify-center items-center gap-1 py-2 text-blue-600 font-medium border-b-2 border-blue-600" type="button">
+            <span>Unggah File</span>
             <div class="group relative inline-block">
               <i class="fa-solid fa-circle-info fa-sm cursor-pointer info-icon" style="color: #f50000"></i>
               <div
@@ -131,14 +131,23 @@
                 <p>Untuk generate link hanya bisa 1 file 1 sheet, dan file yang di unggah harus sesuai dengan template yang sudah di sediakan.</p>
               </div>
             </div>
-          </div>
+          </button>
+
+          <button id="tab-manual" type="button" class="tab-btn cursor-pointer flex justify-center items-center gap-1 py-2 text-gray-600 font-medium hover:text-blue-600">Input Data</button>
+        </div>
+        <div id="content-upload" class="tab-content mt-4">
           <input
             type="file"
             accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
             id="upload"
             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200" />
         </div>
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">Generate</button>
+        <div id="content-manual" class="tab-content hidden mt-4">
+          <input type="text" placeholder="Masukan nama tamu undangan..." class="block w-full border rounded-lg px-3 py-2 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <button type="submit" id="generate-excel" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">Generate</button>
+        <button type="button" id="generate-manual" class="w-full hidden bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">Submit</button>
       </form>
       <div id="output" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-600 text-sm overflow-auto" style="width: 100%; max-height: 300px">
         <div class="flex items-center gap-2 justify-center animation-loading">

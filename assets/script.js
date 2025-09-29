@@ -1,61 +1,11 @@
 
 $(document).ready(async function () {
-  let getLocalStorage = localStorage.getItem("data-list");
+  const $tabContent = $(".tab-content:not(.hidden)").attr("id");
+  let getLocalStorage = localStorage.getItem("data-list")
   if (getLocalStorage) {
     const data = JSON.parse(getLocalStorage);
-    const { description } = await getMessageAPIDesc();
-    const desc = description.replace(/\\n/g, "\n");
-    const match = description.match(/https:\/\/udu-invitations\.com\/[^\s"]+\?to=[\w%-]*/);
-    const urlLink = match ? match[0] : null;
-
-    data.map((item, index) => {
-      const firstKey = Object.keys(item)[0];
-      const firstValue = item[firstKey];
-      const replaceName = encodeURIComponent(firstValue);
-      const messsage = generateMessage(replaceName, firstValue, desc);
-
-
-      let $parent = $("<div>").addClass("mb-4");
-
-      let $parentName = $("<div id='parent-name'>").addClass("flex gap-2 mb-2 items-center");
-      let $name = $("<span>").addClass(`font-semibold text-[10px] ${item.isClick ? "text-green-600" : "text-gray-700"}`).text(`Link ${firstValue}`);
-
-      let $parentLink = $("<div>").addClass("flex justify-between items-center");
-      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").attr("data-message", messsage).text(urlLink + replaceName);
-
-      let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
-      let $iconShare = $("<div>")
-        .addClass("cursor-pointer")
-        .attr("title", "Share")
-        .attr("data-message", messsage)
-        .attr("data-index", index)
-        .html('<i class="fa-solid fa-share"></i>')
-        .on("click", function () {
-          const message = $(this).attr("data-message");
-          const idx = parseInt($(this).attr("data-index"), 10);
-          shareLink(this, message, idx);
-        });
-
-      let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
-
-
-      $parentName.append($name);
-      if (item.isClick) {
-        $parentName.append(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i>`).append($(`<span class="text-green-600 text-[10px] done">Done!</span>`))
-      }
-
-      $parentLink.append($link);
-      $parentIcon.append($iconShare).append($iconCopy);
-      $parentLink.append($parentIcon);
-
-
-      $parent.append($parentName);
-      $parent.append($parentLink);
-      $(".animation-loading").addClass("hidden");
-      $("#output").append($parent);
-    })
+    await listLink(data);
   } else {
-
     $(".animation-loading").addClass("hidden");
     $("#output").append(`<p class="text-center text-gray-600">Tidak ada data</p>`);
   }
@@ -73,13 +23,15 @@ $(document).ready(async function () {
     $(".animation-loading").removeClass("hidden");
     $("#output").find("p").addClass("hidden");
     $("#output").find(".animation-loading").siblings().remove();
-    $(this).find("button").prop("disabled", true).text("Loading...");
+    $(this).find("button[type='submit']").prop("disabled", true).text("Loading...");
+
+    localStorage.removeItem("data-list-manual");
 
     setTimeout(() => {
       let xl2json = new ExcelToJSON();
       xl2json.parseExcel(files[0]);
 
-      $(this).find("button").prop("disabled", false).text("Upload");
+      $(this).find("button[type='submit']").prop("disabled", false).text("Upload");
     }, 1000);
     localStorage.removeItem("data-list");
   });
@@ -103,6 +55,93 @@ $(document).on("click", function () {
     .addClass("opacity-0 scale-95 pointer-events-none");
 });
 
+$(function () {
+  $(".tab-btn").on("click", async function () {
+    $(".animation-loading").removeClass("hidden");
+    $("#output").find("p").addClass("hidden");
+    $("#output").find(".animation-loading").siblings().remove();
+    $(this).find("button").prop("disabled", true).text("Loading...");
+
+    // reset tab style
+    $(".tab-btn")
+      .removeClass("text-blue-600 border-b-2 border-blue-600")
+      .addClass("text-gray-600");
+
+    // activate clicked tab
+    $(this)
+      .addClass("text-blue-600 border-b-2 border-blue-600")
+      .removeClass("text-gray-600");
+
+    // hide all content
+    $(".tab-content").addClass("hidden");
+
+    if (this.id === "tab-upload") {
+      $("#content-upload").removeClass("hidden");
+      $("#download-template").removeClass("opacity-0 pointer-events-none");
+      $("#generate-excel").removeClass("hidden");
+      $("#generate-manual").addClass("hidden");
+
+      const getLocalStorage = localStorage.getItem("data-list");
+      if (getLocalStorage) {
+        const data = JSON.parse(getLocalStorage);
+        await listLink(data);
+      } else {
+        setTimeout(() => {
+          $(".animation-loading").addClass("hidden");
+          $("#output").append(`<p class="text-center text-gray-600">Tidak ada data</p>`);
+          $("#content-manual").find("input").focus();
+        }, 1000);
+      }
+    } else {
+      $("#content-manual").removeClass("hidden");
+      $("#generate-manual").removeClass("hidden");
+      $("#download-template").addClass("opacity-0 pointer-events-none");
+      $("#generate-excel").addClass("hidden");
+
+      const getLocalStorage = localStorage.getItem("data-list-manual");
+      if (getLocalStorage) {
+        const data = JSON.parse(getLocalStorage);
+        await listLink(data);
+      } else {
+        setTimeout(() => {
+          $(".animation-loading").addClass("hidden");
+          $("#output").append(`<p class="text-center text-gray-600">Tidak ada data</p>`);
+          $("#content-manual").find("input").focus();
+        }, 1000);
+      }
+    }
+  });
+});
+
+$(function () {
+  $("#generate-manual").on("click", async function () {
+    localStorage.removeItem("data-list");
+    $(".animation-loading").removeClass("hidden");
+    $("#output").find("p").addClass("hidden");
+    $("#output").find(".animation-loading").siblings().remove();
+    $(this).prop("disabled", true).text("Loading...");
+
+    const value = $("#content-manual").find("input").val().trim();
+
+    if (!value) {
+      alert("Please enter a value")
+      return;
+    } // prevent empty value
+
+    // read existing data
+    const data = localStorage.getItem("data-list-manual");
+    let json = data ? JSON.parse(data) : [];
+
+    // add new item to the beginning
+    json.unshift({ name: value });
+
+    // save back to localStorage
+    localStorage.setItem("data-list-manual", JSON.stringify(json));
+
+    // call your function with updated list
+    await listLink(json);
+  })
+});
 
 class ExcelToJSON {
   constructor() {
@@ -176,7 +215,71 @@ class ExcelToJSON {
   }
 }
 
+const listLink = async (data) => {
+  const { description } = await getMessageAPIDesc();
+  const desc = description.replace(/\\n/g, "\n");
+  const match = description.match(/https:\/\/udu-invitations\.com\/[^\s"]+\?to=[\w%-]*/);
+  const urlLink = match ? match[0] : null;
+  if (data.length > 0) {
+    data.map((item, index) => {
+      const firstKey = Object.keys(item)[0];
+      const firstValue = item[firstKey];
+      const replaceName = encodeURIComponent(firstValue);
+      const messsage = generateMessage(replaceName, firstValue, desc);
+
+
+      let $parent = $("<div>").addClass("mb-4");
+
+      let $parentName = $("<div id='parent-name'>").addClass("flex gap-2 mb-2 items-center");
+      let $name = $("<span>").addClass(`font-semibold text-[10px] ${item.isClick ? "text-green-600" : "text-gray-700"}`).text(`Link ${firstValue}`);
+
+      let $parentLink = $("<div>").addClass("flex justify-between items-center");
+      let $link = $("<a class='truncate'>").addClass("text-blue-600 w-[75%]").attr("data-message", messsage).text(urlLink + replaceName);
+
+      let $parentIcon = $("<div>").addClass("flex gap-2 w-[12%] justify-between items-center");
+      let $iconShare = $("<div>")
+        .addClass("cursor-pointer")
+        .attr("title", "Share")
+        .attr("data-message", messsage)
+        .attr("data-index", index)
+        .html('<i class="fa-solid fa-share"></i>')
+        .on("click", function () {
+          const message = $(this).attr("data-message");
+          const idx = parseInt($(this).attr("data-index"), 10);
+          shareLink(this, message, idx);
+        });
+
+      let $iconCopy = $(`<div class="cursor-pointer" title="Copy" onclick="copyLink(this, ${index})"><i class="fa-solid fa-clipboard"></i></div>`);
+
+
+      $parentName.append($name);
+      if (item.isClick) {
+        $parentName.append(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i>`).append($(`<span class="text-green-600 text-[10px] done">Done!</span>`))
+      }
+
+      $parentLink.append($link);
+      $parentIcon.append($iconShare).append($iconCopy);
+      $parentLink.append($parentIcon);
+
+
+      $parent.append($parentName);
+      $parent.append($parentLink);
+      $(".animation-loading").addClass("hidden");
+      $("#generate-manual").prop("disabled", false).text("Submit");
+      $("#content-manual").find("input").val("").focus();
+      $("#output").append($parent);
+    })
+  } else {
+    $("#content-manual").find("input").focus();
+    $(".animation-loading").addClass("hidden");
+    $("#output").find("p").remove();
+    $("#output").append($(`<p class="text-gray-600 text-[10px]">No data found</p>`));
+  }
+
+}
+
 const shareLink = (element, message, index) => {
+  const $tabContent = $(".tab-content:not(.hidden)").attr("id");
   let $parentName = $(element).parent().parent().siblings();
   let $iconSuccess = $(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i>`);
 
@@ -185,7 +288,7 @@ const shareLink = (element, message, index) => {
   $parentName.find("span").addClass("text-green-600");
   $parentName.append($iconSuccess).append($(`<span class="text-green-600 text-[10px] done">Done!</span>`));
 
-  const getLocalStorage = localStorage.getItem("data-list");
+  const getLocalStorage = $tabContent === "tab-upload" ? localStorage.getItem("data-list") : localStorage.getItem("data-list-manual");
   const updatedData = JSON.parse(getLocalStorage);
   updatedData.forEach((item, i) => {
     if (i === index) {
@@ -197,13 +300,14 @@ const shareLink = (element, message, index) => {
     }
   });
 
-  localStorage.setItem("data-list", JSON.stringify(updatedData));
+  $tabContent === "tab-upload" ? localStorage.setItem("data-list", JSON.stringify(updatedData)) : localStorage.setItem("data-list-manual", JSON.stringify(updatedData));
 
   const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}`;
   window.open(whatsappURL, "_blank");
 };
 
 const copyLink = (element, index) => {
+  const $tabContent = $(".tab-content:not(.hidden)").attr("id");
   let $parentName = $(element).parent().parent().siblings();
   let $iconSuccess = $(`<i class="fa-solid fa-circle-check text-green-600 fa-2xs"></i>`);
 
@@ -217,7 +321,7 @@ const copyLink = (element, index) => {
   const message = $(element).parent().parent().find("a").attr("data-message");
   navigator.clipboard.writeText(message);
 
-  const getLocalStorage = localStorage.getItem("data-list");
+  const getLocalStorage = $tabContent === "tab-upload" ? localStorage.getItem("data-list") : localStorage.getItem("data-list-manual");
   const updatedData = JSON.parse(getLocalStorage);
   updatedData.forEach((item, i) => {
     if (i === index) {
@@ -229,7 +333,7 @@ const copyLink = (element, index) => {
     }
   });
 
-  localStorage.setItem("data-list", JSON.stringify(updatedData));
+  $tabContent === "tab-upload" ? localStorage.setItem("data-list", JSON.stringify(updatedData)) : localStorage.setItem("data-list-manual", JSON.stringify(updatedData));
 
   setTimeout(() => {
     $(element).html(`<i class="fa-solid fa-clipboard"></i>`);
