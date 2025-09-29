@@ -1,6 +1,5 @@
 
 $(document).ready(async function () {
-  const $tabContent = $(".tab-content:not(.hidden)").attr("id");
   let getLocalStorage = localStorage.getItem("data-list")
   if (getLocalStorage) {
     const data = JSON.parse(getLocalStorage);
@@ -116,17 +115,18 @@ $(function () {
 $(function () {
   $("#generate-manual").on("click", async function () {
     localStorage.removeItem("data-list");
-    $(".animation-loading").removeClass("hidden");
-    $("#output").find("p").addClass("hidden");
-    $("#output").find(".animation-loading").siblings().remove();
-    $(this).prop("disabled", true).text("Loading...");
-
     const value = $("#content-manual").find("input").val().trim();
 
     if (!value) {
       alert("Please enter a value")
       return;
     } // prevent empty value
+
+    $(".animation-loading").removeClass("hidden");
+    $("#output").find("p").addClass("hidden");
+    $("#output").find(".animation-loading").siblings().remove();
+    $(this).prop("disabled", true).text("Loading...");
+
 
     // read existing data
     const data = localStorage.getItem("data-list-manual");
